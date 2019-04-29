@@ -1,0 +1,12 @@
+<aura:component >
+	<aura:attribute name="optionsBrand" type="list"/>
+    <aura:attribute name="countSelectedBrand" type="Integer"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="updatePicklistOptions" event="c:updateOptions" action="{!c.handleUpdateOptions}"/>
+    
+    <aura:registerEvent name="updateBrandOptions" type="c:updateOptions"/>
+    
+    <label class="slds-form-element__label" for="combobox-unique-id-3">Select Brand for display</label>
+    <p><c:picklistMultiselect options="{!v.optionsBrand}" countSelected="{!v.countSelectedBrand}"/></p>
+</aura:component>

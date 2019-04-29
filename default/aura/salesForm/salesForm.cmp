@@ -1,0 +1,57 @@
+<aura:component controller="SalesFormController" implements="force:appHostable,flexipage:availableForAllPageTypes, 
+    force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId,lightning:actionOverride">
+    
+    <aura:attribute name="brandAudi" type="Model__c[]" default="[{'sobjectType':'Model__c','Region__c':'','Country__c':''}]"/>
+    <aura:attribute name="brandBmw" type="Model__c[]" default="[{'sobjectType':'Model__c','Region__c':'','Country__c':''}]"/>
+    <aura:attribute name="brandMercedes" type="Model__c[]" default="[{'sobjectType':'Model__c','Region__c':'','Country__c':''}]"/>
+    <aura:attribute name="brandAudiId" type="String"/>
+    <aura:attribute name="brandBmwId" type="String"/>
+    <aura:attribute name="brandMercedesId" type="String"/>
+    <aura:attribute name="helpMessage" type="String" default=""/>
+    
+    <aura:attribute name="salesFormName" type="String"/>
+    <aura:attribute name="salesFormId" type="String" default=""/>
+    <aura:attribute name="opportunityId" type="String" default=""/>
+    <aura:attribute name="opportunityForLink" type="String" default=""/>
+    <aura:attribute name="optionsForSectionBrands" type="list" />
+    <aura:attribute name="countSelectedBrands" type="Integer" default="0"/>
+    <aura:attribute name="emptySection" type="Integer" default="1"/>
+    
+    <aura:attribute name="saveSalesForm" type="Integer" default="1"/>
+    <aura:attribute name="countForSave" type="Integer" default="0"/>
+    <aura:attribute name="countBrandsForSubmit" type="Integer" default="0"/>
+    <aura:attribute name="requiredFields" type="Boolean" default="false"/>
+    <aura:attribute name="isReadyThisFormForSubmit" type="Boolean" default="true"/>
+    <aura:attribute name="submitSalesForm" type="Integer" default="1"/>
+    <aura:attribute name="readyForApprove" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:handler name="updateBrandOptions" event="c:updateOptions" action="{!c.handleUpdateBrand}"/>
+    <aura:handler name="updateModelsList" event="c:updateModelsList" action="{!c.updateModelList}"/>
+    <aura:handler name="updateModelsListForSave" event="c:updateModelsList" action="{!c.updateModelListForSave}"/>
+    <aura:handler name="checkIsReadyForSubmit" event="c:readyForSubmit" action="{!c.isReadyForSubmit}"/>
+    
+	<div class="slds-size--1-of-3">
+        <p style="color:red; font-size:14px;">{!v.helpMessage}</p>
+    	<p><lightning:input type="text" name="name1" label="Sales Form Name"  value="{!v.salesFormName}" required="true"/></p>
+    	<c:picklistBrand optionsBrand="{!v.optionsForSectionBrands}" countSelectedBrand="{!v.countSelectedBrands}"/>
+    </div>   
+    
+    <aura:if isTrue="{!v.optionsForSectionBrands[0].isChecked}">
+    	<c:brandSection brandName="Audi" models="{!v.brandAudi}" emptySection="{!v.emptySection}" saveSalesForm="{!v.saveSalesForm}" 
+        	submitSalesForm="{!v.submitSalesForm}" readyForApprove="{!v.readyForApprove}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.optionsForSectionBrands[1].isChecked}">
+    	<c:brandSection brandName="BMW" models="{!v.brandBmw}" emptySection="{!v.emptySection}" saveSalesForm="{!v.saveSalesForm}"
+        	submitSalesForm="{!v.submitSalesForm}" readyForApprove="{!v.readyForApprove}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.optionsForSectionBrands[2].isChecked}">
+    	<c:brandSection brandName="Mercedes" models="{!v.brandMercedes}" emptySection="{!v.emptySection}" saveSalesForm="{!v.saveSalesForm}"
+        	submitSalesForm="{!v.submitSalesForm}" readyForApprove="{!v.readyForApprove}"/>
+    </aura:if>
+    <p/>
+    <lightning:button label="Save" title="Neutral action" onclick="{! c.saveForm }" class="slds-m-right_medium slds-m-top_medium" disabled="{!v.readyForApprove}"/>
+    <lightning:button label="Submit" title="Neutral action" onclick="{! c.submitForm }" class="slds-m-right_medium slds-m-top_medium" disabled="{!v.readyForApprove}"/>
+    <lightning:button label="Cancel" title="Neutral action" onclick="{! c.cancelForm }" class="slds-m-right_medium slds-m-top_medium"/>
+    
+</aura:component>

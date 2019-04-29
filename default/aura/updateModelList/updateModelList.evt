@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" >
+	<aura:attribute name="modelsList" type="Model__c[]"/>
+    <aura:attribute name="brandName" type="String"/>
+</aura:event>

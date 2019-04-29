@@ -1,0 +1,46 @@
+<aura:component >
+    <aura:attribute name="models" type="Model__c[]" default="[{'sobjectType':'Model__c',
+                                                                        'Region__c':'',
+                                                                        'Country__c':''}]"/>
+    <aura:attribute name="modelsHelper" type="Model__c[]"/>
+    <aura:attribute name="modelsHelperCount" type="Integer" default="0"/>
+    <aura:attribute name="listForSave" type="Model__c[]" default="[]"/>
+    <aura:attribute name="listForSaveCount" type="Integer" default="0"/>
+    <aura:attribute name="readyForSubmitCount" type="Integer" default="0"/>
+    <aura:attribute name="isReadyBrand" type="Boolean" default="true"/>
+    <aura:attribute name="modelsLength" type="Integer" default="0"/>
+    <aura:attribute name="modelForEmptySection" type="Model__c" default="{'sobjectType':'Model__c',
+                                                                        'Region__c':'',
+                                                                        'Country__c':''}"/>
+    <aura:attribute name="emptySection" type="Integer" default="1"/>
+    <aura:attribute name="brandName" type="String" default="Mercedes"/>
+    <aura:attribute name="saveSalesForm" type="Integer" default="1"/>
+    <aura:attribute name="requiredFields" type="Boolean" default="false"/>
+    <aura:attribute name="submitSalesForm" type="Integer" default="1"/>
+    <aura:attribute name="readyForApprove" type="Boolean" default="false"/>
+    
+    <aura:handler name="updateModel" event="c:updateModel" action="{!c.handleUpdateModel}"/>
+    <aura:handler name="saveMyModel" event="c:updateModel" action="{!c.handleSaveModel}"/>
+    <aura:handler name="deleteSubsection" event="c:deleteSubsection" action="{!c.deleteSubsection}"/>
+    <aura:handler name="checkReadyForSubmit" event="c:readyForSubmit" action="{!c.handleReadyForSubmit}"/>
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+    <aura:registerEvent name="updateModelsList" type="c:updateModelsList"/>
+    <aura:registerEvent name="updateModelsListForSave" type="c:updateModelsList"/>
+    <aura:registerEvent name="checkIsReadyForSubmit" type="c:readyForSubmit"/>
+
+    <p style="font-size:24px;">{!v.brandName}</p>
+    <lightning:layout multipleRows="true">
+        <aura:iteration items="{!v.models}" var="oneModel" indexVar="ind" >
+            <lightning:layoutItem class="slds-m-right_small">
+                <div style="border:2px solid #00a1e1; padding:8px; border-radius:6px; margin-top:8px;">
+    				<c:subSection defaultModel="{!oneModel}" index="{!ind}" emptySection="{!v.emptySection}" saveSalesForm="{!v.saveSalesForm}" 
+                		submitSalesForm="{!v.submitSalesForm}" readyForApprove="{!v.readyForApprove}"/>
+                </div>
+            </lightning:layoutItem>    
+        </aura:iteration>
+    </lightning:layout> 
+    <p/>	
+    <lightning:button variant="Neutral" label="Add new"  onclick="{! c.addSubsection }" class="slds-m-top_small" disabled="{!v.readyForApprove}"/>
+    <lightning:button variant="Neutral" label="Clone 1st"  onclick="{! c.cloneSubsection }" class="slds-m-top_small" disabled="{!v.readyForApprove}"/>
+</aura:component>

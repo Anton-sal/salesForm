@@ -1,0 +1,13 @@
+<aura:component controller="PickListController">
+    
+    <aura:attribute name="optionsRegion" type="list"/>
+    <aura:attribute name="countSelectedRegion" type="Integer"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="updatePicklistOptions" event="c:updateOptions" action="{!c.handleUpdateOptions}"/>
+    <aura:registerEvent name="updateRegionsOptions" type="c:updateOptions"/>
+    
+    <label class="slds-form-element__label" for="combobox-unique-id-3">Select region</label>
+    <p><c:picklistMultiselect options="{!v.optionsRegion}" label="Select region" countSelected="{!v.countSelectedRegion}"/></p>
+    
+</aura:component>

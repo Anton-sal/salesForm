@@ -1,0 +1,17 @@
+<aura:component controller="PickListController">
+    
+    <aura:attribute name="optionsCountry" type="list"/>
+    <aura:attribute name="optionsRegion" type="list"/>
+    <aura:attribute name="disableButton" type="Boolean" default="true"/>
+    <aura:attribute name="buttonSelectLabel" type="String" default="Deselect All"/>
+    <aura:attribute name="countSelectedCountry" type="Integer"/>
+    
+    <aura:handler name="updatePicklistOptions" event="c:updateOptions" action="{!c.handleUpdateOptions}"/>
+    <aura:registerEvent name="updateCountryOptions" type="c:updateOptions"/>
+    
+    <label class="slds-form-element__label" for="combobox-unique-id-3">Select country</label>
+    <lightning:button variant="base" label="{!v.buttonSelectLabel}" title="Base action" onclick="{!c.handleClick }" disabled="{!v.disableButton}"/>
+
+    <p><c:picklistMultiselect options="{!v.optionsCountry}" countSelected="{!v.countSelectedCountry}"/></p>
+    
+</aura:component>

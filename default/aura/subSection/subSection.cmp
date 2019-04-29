@@ -1,0 +1,122 @@
+<aura:component controller="PickListController">
+	
+    <aura:attribute name="defaultModel" type="Model__c"/>
+    <aura:attribute name="optionsRegion" type="list"/>
+    <aura:attribute name="optionsCountry" type="list"/>
+    <aura:attribute name="countSelectedCountry" type="Integer"/>
+    <aura:attribute name="countSelectedRegion" type="Integer"/>
+    <aura:attribute name="disableButton" type="Boolean" default="true"/>
+    <aura:attribute name="buttonSelectLabel" type="String" default="Deselect All"/>
+    <aura:attribute name="optionsConsent" type="List" default="[
+    													{'label': 'Yes', 'value': 'Yes'},
+    													{'label': 'No', 'value': 'No'},
+    													{'label': 'Not Now', 'value': 'Not Now'},]"/>
+    <aura:attribute name="consentValue" type="String"/>
+    <aura:attribute name="displayReason" type="Boolean" default="false"/>
+	<aura:attribute name="date" type="Date"/>    
+    <aura:attribute name="reasonValue" type="String"/>
+    <aura:attribute name="modelName" type="String"/>
+    <aura:attribute name="quantity" type="Integer"/>
+    <aura:attribute name="index" type="Integer" default="45"/>
+    <aura:attribute name="emptySection" type="Integer" default="1"/>
+    <aura:attribute name="modelId" type="String"/>
+    <aura:attribute name="saveSalesForm" type="Integer" default="1"/>
+	<aura:attribute name="requiredFields" type="Boolean" default="false"/>
+    <aura:attribute name="submitSalesForm" type="Integer" default="1"/>
+    <aura:attribute name="readyForApprove" type="Boolean" default="false"/>
+    
+    <aura:handler name="updateRegionsOptions" event="c:updateOptions" action="{!c.handleUpdateCountry}"/>
+    <aura:handler name="updateCountryOptions" event="c:updateOptions" action="{!c.handleUpdateListCountry}"/>
+    <aura:handler name="change" action="{!c.handleChange}" value="{!v.defaultModel}"/>
+    <aura:handler name="change" action="{!c.emptyModelUpdate}" value="{!v.emptySection}"/>
+    <aura:handler name="change" action="{!c.saveModel}" value="{!v.saveSalesForm}"/>
+    <aura:handler name="change" action="{!c.submitModel}" value="{!v.submitSalesForm}"/>
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:registerEvent name="updateModel" type="c:updateModel"/>
+    <aura:registerEvent name="saveMyModel" type="c:updateModel"/>
+    <aura:registerEvent name="deleteSubsection" type="c:deleteSubsection"/>
+    <aura:registerEvent name="checkReadyForSubmit" type="c:readyForSubmit"/>
+    
+    <!-- Create markup for display on PHONE-->
+    <aura:if isTrue="{!$Browser.isPhone}">
+        <lightning:layout>
+            <lightning:layoutItem class="slds-size--1-of-1 slds-p-right_medium">
+                <p><lightning:input type="text" name="name1" label="Enter Name" class="slds-size--1-of-1" value="{!v.modelName}" 
+                	required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+                <aura:if  isTrue="{!v.readyForApprove}">
+                    <p/><lightning:textarea name="input1" label="Region" class="slds-size--1-of-1" value="{!v.defaultModel.Region__c}" 
+                    	readonly="{!v.readyForApprove}"/>
+                    <p/><lightning:textarea name="input1" label="Country" class="slds-size--1-of-1" value="{!v.defaultModel.Country__c}" 
+                    	readonly="{!v.readyForApprove}"/>
+                    <aura:set attribute="else">   
+                        <p><c:picklistRegion optionsRegion="{!v.optionsRegion}" countSelectedRegion="{!v.countSelectedRegion}"/></p>
+    				    <p><c:picklistCountry optionsCountry="{!v.optionsCountry}" disableButton="{!v.disableButton}"
+    					    buttonSelectLabel="{!v.buttonSelectLabel}" countSelectedCountry="{!v.countSelectedCountry}"/></p>
+                    </aura:set>
+                </aura:if>
+                <p><lightning:input type="number" name="quantity" label="Enter a quantity" class="slds-size--1-of-1" 
+                    value="{!v.quantity}" min="1" step="1" required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+            	<p><lightning:input type="date" name="input1" label="Enter a date" class="slds-size--1-of-1" value="{!v.date}" 
+                   required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+    			<p><lightning:combobox name="progress" label="Select Consent" value="{!v.consentValue}" placeholder="Select Progress" 
+                	options="{! v.optionsConsent }" onchange="{! c.handleChangeConsent }" class="slds-size--1-of-1 slds-m-top_x-small" 
+                	required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+   			
+            	<aura:if isTrue="{!v.displayReason}">
+        			<p><lightning:textarea name="input1" label="Reason" class="slds-size--1-of-1" value="{!v.reasonValue}" 
+                        required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+                </aura:if>
+
+                <aura:if  isTrue="{!v.index>0}">
+                	<lightning:button variant="destructive" label="Delete"  onclick="{! c.deleteSubsection }" class="slds-m-top_medium" disabled="{!v.readyForApprove}"/>
+                <aura:set attribute="else">
+                    <lightning:button variant="destructive" label="Delete" class="slds-m-top_medium" disabled="true"/>
+                </aura:set>    
+                </aura:if>
+            </lightning:layoutItem>    
+        </lightning:layout>
+        
+
+        <!-- Create markup for display on DESKTOP-->
+    <aura:set attribute="else">
+    	<lightning:layout>
+        	<lightning:layoutItem class="slds-size--1-of-2 slds-p-right_medium">
+    			<p><lightning:input type="text" name="name1" label="Enter Name" class="slds-size--1-of-1" value="{!v.modelName}" 
+                	required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+                <aura:if  isTrue="{!v.readyForApprove}">
+                    <p/><lightning:textarea name="input1" label="Region" class="slds-size--1-of-1" value="{!v.defaultModel.Region__c}" 
+                    	readonly="{!v.readyForApprove}"/>
+                    <p/><lightning:textarea name="input1" label="Country" class="slds-size--1-of-1" value="{!v.defaultModel.Country__c}" 
+                    	readonly="{!v.readyForApprove}"/>
+                <aura:set attribute="else">   
+                    <p><c:picklistRegion optionsRegion="{!v.optionsRegion}" countSelectedRegion="{!v.countSelectedRegion}"/></p>
+    				<p><c:picklistCountry optionsCountry="{!v.optionsCountry}" disableButton="{!v.disableButton}"
+    					buttonSelectLabel="{!v.buttonSelectLabel}" countSelectedCountry="{!v.countSelectedCountry}"/></p>
+                </aura:set>
+                </aura:if>   
+                
+                <aura:if  isTrue="{!v.index>0}">
+                	<lightning:button variant="destructive" label="Delete"  onclick="{! c.deleteSubsection }" class="slds-m-top_medium" disabled="{!v.readyForApprove}"/>
+                <aura:set attribute="else">
+                    <lightning:button variant="destructive" label="Delete" class="slds-m-top_medium" disabled="true"/>
+                </aura:set>    
+                </aura:if>
+    		</lightning:layoutItem>
+        	<lightning:layoutItem class="slds-size--1-of-2">    
+    			<p><lightning:input type="number" name="quantity" label="Enter a quantity" class="slds-size--1-of-1" 
+                    value="{!v.quantity}" min="1" step="1" required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+            	<p><lightning:input type="date" name="input1" label="Enter a date" class="slds-size--1-of-1" value="{!v.date}" 
+                   required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+    			<p><lightning:combobox name="progress" label="Select Consent" value="{!v.consentValue}" placeholder="Select Progress" 
+                	options="{! v.optionsConsent }" onchange="{! c.handleChangeConsent }" class="slds-size--1-of-1 slds-m-top_x-small" 
+                	required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+            	<aura:if isTrue="{!v.displayReason}">
+        			<p><lightning:textarea name="input1" label="Reason" class="slds-size--1-of-1" value="{!v.reasonValue}" 
+                        required="{!v.requiredFields}" readonly="{!v.readyForApprove}"/></p>
+    			</aura:if>
+        	</lightning:layoutItem>    
+    	</lightning:layout>
+    </aura:set>    
+    </aura:if>
+</aura:component>
